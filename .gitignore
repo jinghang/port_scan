@@ -1,3 +1,4 @@
 venv
 .idea/
 vcs.xml
+*.log
