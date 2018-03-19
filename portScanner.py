@@ -34,19 +34,19 @@ class PortScanner(object):
     """
     端口扫描工具类
     """
-    def __init__(self, host, por_list=None):
+    def __init__(self, host, port_list=None, timeout=1):
         """
         构造
         :param host: 主机，可以是域名或者IP
-        :param por_list: 端口列表，如果不指定，将扫描所有端口
+        :param port_list: 端口列表，如果不指定，将扫描所有端口
         """
         self.__ip = None
         self.__host = host
-        if por_list is None:
+        if port_list is None:
             self.__port_list = self.__get_port()
         else:
-            self.__port_list = por_list
-        self.__delay = 1
+            self.__port_list = port_list
+        self.__delay = timeout # 超时
         self.__thread_limit = 2000
         self.__output = {}
 
@@ -78,7 +78,7 @@ class PortScanner(object):
 
         try:
             result = tcp_sock.connect_ex((self.__ip, int(port_number)))
-            logging.debug("端口%d 返回值是%s", port_number, result)
+            logging.debug("端口%s 返回值是%s", port_number, result)
             if result == 0:
                 self.__output[port_number] = 'OPEN'
             else:
@@ -142,9 +142,13 @@ class PortScanner(object):
         显示结果
         """
         print("端口开放情况:")
+        count = 0
         for port in self.__port_list:
             if self.__output[port] == 'OPEN':
                 print(str(port) + ': ' + self.__output[port])
+                count += 1
+        if count == 0:
+            print("没有开放端口")
 
     def run(self):
         """
@@ -155,8 +159,8 @@ class PortScanner(object):
         stop_time = time.time()
         print("扫描结束，用时：%f 秒"%(stop_time-start_time))
 
-    @classmethod
-    def usage(cls):
+    @staticmethod
+    def __usage():
         """
         使用方法
         """
@@ -164,18 +168,52 @@ class PortScanner(object):
         print("For Example:\n  python %s www.baidu.com"%(os.path.basename(__file__)))
         pass
 
+    @classmethod
+    def start(cls):
+        """
+        开始扫描，处理参数
+        """
+
+        if len(sys.argv) < 2:
+            PortScanner.__usage()
+            return
+        argv = sys.argv[1:]
+        param = {
+            "host": None,
+            "-t": 1,
+            "-p": None  # 端口号，用逗号隔开
+        }
+        # 获取参数
+        i = 0
+        while i < len(argv):
+            if argv[i].startswith('-'):
+                if argv[i] in param and (i+1) < len(argv):
+                    param[argv[i]] = argv[i + 1]
+                    i += 2
+                else:
+                    PortScanner.__usage()
+                    return
+            else:
+                if param.get("host") is None:
+                    param["host"] = argv[i]
+                    i += 1
+                else:
+                    PortScanner.__usage()
+                    return
+        if param["-p"] is not None:
+            param["-p"] = param["-p"].split(',')
+            pass
+
+        scanner = PortScanner(param["host"], port_list=param["-p"], timeout=param["-t"])
+        scanner.run()
+        pass
+
 
 def main():
     """
     main函数，入口
     """
-    argv = sys.argv
-    if len(argv) < 2:
-        PortScanner.usage()
-        return
-    host = argv[1]
-    scanner = PortScanner(host)
-    scanner.run()
+    PortScanner.start()
 
 if __name__ == "__main__":
     main()
