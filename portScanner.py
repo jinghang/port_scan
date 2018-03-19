@@ -16,7 +16,7 @@ import sys
 import os
 from concurrent.futures import ThreadPoolExecutor
 
-__authors__ = 'LiaoJinghang'
+__author__ = 'LiaoJinghang'
 __version__ = '0.01'
 
 # 日志配置
