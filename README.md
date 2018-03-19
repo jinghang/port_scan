@@ -9,7 +9,7 @@ For Example:
 
 ## 示例
 ```
-D:\code\python\port_scan>python portScanner.py www.baidu.com
+python portScanner.py www.baidu.com
 
 正在获取主机[www.baidu.com]的IP……
 主机[www.baidu.com]的IP是：14.215.177.38
@@ -19,8 +19,18 @@ D:\code\python\port_scan>python portScanner.py www.baidu.com
 80: OPEN
 443: OPEN
 扫描结束，用时：34.145004 秒
-
 ```
+
+## 查看文档
+```
+python -m pydoc portScanner
+```
+
+## 生成HTML文档
+```
+python -m pydoc -w portScanner
+```
+
 
 ### 环境
 ```

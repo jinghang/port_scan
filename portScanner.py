@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+"""
+端口扫描工具类，使用到了线程池，速度快
+Usage:
+  python portScanner.py <host>
+For Example:
+  python portScanner.py www.baidu.com
+"""
 
 import socket
 import threading
@@ -8,6 +15,9 @@ import time
 import sys
 import os
 from concurrent.futures import ThreadPoolExecutor
+
+__authors__ = 'LiaoJinghang'
+__version__ = '0.01'
 
 # 日志配置
 logging.basicConfig(
@@ -20,9 +30,9 @@ logging.basicConfig(
     )
 
 
-class PortScanner:
+class PortScanner(object):
     """
-    端口扫描工具
+    端口扫描工具类
     """
     def __init__(self, host, por_list=None):
         """
