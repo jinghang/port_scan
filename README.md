@@ -9,6 +9,8 @@ python portScanner.py github.com
 ```
 Usage:
   python portScanner.py <host> [option]
+host:
+  要扫描的主机，可以是域名或者IP
 option:
   -t: 连接超时时间，单位是秒，默认是1秒，
   -p: 要扫秒的端口好，多个用逗号给开，不指定将扫描所有端口，
