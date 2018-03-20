@@ -11,9 +11,15 @@
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:d%3A%5Ccode%5Cpython%5Cport_scan%5Cportscanner.py">d:\code\python\port_scan\portscanner.py</a></font></td></tr></table>
     <p><tt>端口扫描工具类，使用到了线程池，速度快<br>
 Usage:<br>
-&nbsp;&nbsp;python&nbsp;portScanner.py&nbsp;&lt;host&gt;<br>
+&nbsp;&nbsp;python&nbsp;portScanner.py&nbsp;&lt;host&gt;&nbsp;[option]<br>
+host:<br>
+&nbsp;&nbsp;要扫描的主机，可以是域名或者IP<br>
+option:<br>
+&nbsp;&nbsp;-t:&nbsp;连接超时时间，单位是秒，默认是1秒，<br>
+&nbsp;&nbsp;-p:&nbsp;要扫秒的端口好，多个用逗号给开，不指定将扫描所有端口，<br>
 For&nbsp;Example:<br>
-&nbsp;&nbsp;python&nbsp;portScanner.py&nbsp;www.baidu.com</tt></p>
+&nbsp;&nbsp;python&nbsp;portScanner.py&nbsp;www.baidu.com<br>
+&nbsp;&nbsp;python&nbsp;portScanner.py&nbsp;www.baidu.com&nbsp;-t&nbsp;3&nbsp;-p&nbsp;80,443</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -53,15 +59,16 @@ For&nbsp;Example:<br>
 <td colspan=2><tt>端口扫描工具类<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="PortScanner-__init__"><strong>__init__</strong></a>(self, host, por_list=None)</dt><dd><tt>构造<br>
+<dl><dt><a name="PortScanner-__init__"><strong>__init__</strong></a>(self, host, port_list=None, timeout=1)</dt><dd><tt>构造<br>
 :param&nbsp;host:&nbsp;主机，可以是域名或者IP<br>
-:param&nbsp;por_list:&nbsp;端口列表，如果不指定，将扫描所有端口</tt></dd></dl>
+:param&nbsp;port_list:&nbsp;端口列表，如果不指定，将扫描所有端口<br>
+:param&nbsp;timeout:&nbsp;连接超时时间，单位是秒，默认是1秒</tt></dd></dl>
 
-<dl><dt><a name="PortScanner-run"><strong>run</strong></a>(self)</dt><dd><tt>开始扫描</tt></dd></dl>
+<dl><dt><a name="PortScanner-run"><strong>run</strong></a>(self)</dt><dd><tt>开始扫描，记录扫描用时</tt></dd></dl>
 
 <hr>
 Class methods defined here:<br>
-<dl><dt><a name="PortScanner-usage"><strong>usage</strong></a>()<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>使用方法</tt></dd></dl>
+<dl><dt><a name="PortScanner-start"><strong>start</strong></a>()<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>开始扫描，解析命令行参数，然后调用&nbsp;<a href="#PortScanner-run">run</a>()</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>

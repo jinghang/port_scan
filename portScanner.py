@@ -2,9 +2,15 @@
 """
 端口扫描工具类，使用到了线程池，速度快
 Usage:
-  python portScanner.py <host>
+  python portScanner.py <host> [option]
+host:
+  要扫描的主机，可以是域名或者IP
+option:
+  -t: 连接超时时间，单位是秒，默认是1秒，
+  -p: 要扫秒的端口好，多个用逗号给开，不指定将扫描所有端口，
 For Example:
   python portScanner.py www.baidu.com
+  python portScanner.py www.baidu.com -t 3 -p 80,443
 """
 
 import socket
@@ -39,6 +45,7 @@ class PortScanner(object):
         构造
         :param host: 主机，可以是域名或者IP
         :param port_list: 端口列表，如果不指定，将扫描所有端口
+        :param timeout: 连接超时时间，单位是秒，默认是1秒
         """
         self.__ip = None
         self.__host = host
@@ -56,7 +63,7 @@ class PortScanner(object):
         生成端口号数组
         :return: 端口号数组
         """
-        return list(range(1, 65535))
+        return list(range(1, 65536))
 
     @staticmethod
     def __is_ip(ip):
@@ -100,8 +107,9 @@ class PortScanner(object):
 
     def __scan_ports(self):
         """
-        扫描端口，同时显示扫描状态
+        扫描端口，启动扫描线程，同时显示扫描状态
         """
+        # 如果是域名，就将域名换成IP
         if self.__is_ip(self.__host):
             self.__ip = self.__host
         else:
@@ -112,15 +120,17 @@ class PortScanner(object):
             except socket.error as e:
                 print("获取主机[{}]的IP出错，错误信息：{}".format(self.__host, e))
                 return
-                pass
+
         print("开始扫描[{}]的端口……".format(self.__ip))
         thread = threading.Thread(target=self.__scan_ports_helper)
         thread.start()
+        # 显示扫描状态，当扫描完成时才往下走
         while len(self.__output) < len(self.__port_list):
             self.__show_status()
 
             continue
         print()
+        # 显示扫描结果
         self.__show_result()
 
     def __show_status(self):
@@ -150,28 +160,35 @@ class PortScanner(object):
         if count == 0:
             print("没有开放端口")
 
+    @staticmethod
+    def __usage():
+        """
+        使用方法
+        """
+        print("Usage:")
+        print("  python %s <host> [option]"%(os.path.basename(__file__)))
+        print("host:")
+        print("  要扫描的主机，可以是域名或者IP")
+        print("option:")
+        print("  -t: 连接超时时间，单位是秒，默认是1秒，")
+        print("  -p: 要扫秒的端口好，多个用逗号给开，不指定将扫描所有端口，")
+        print("For Example:")
+        print("  python %s www.baidu.com" % (os.path.basename(__file__)))
+        print("  python %s www.baidu.com -t 3 -p 80,443" % (os.path.basename(__file__)))
+
     def run(self):
         """
-        开始扫描
+        开始扫描，记录扫描用时
         """
         start_time = time.time()
         self.__scan_ports()
         stop_time = time.time()
         print("扫描结束，用时：%f 秒"%(stop_time-start_time))
 
-    @staticmethod
-    def __usage():
-        """
-        使用方法
-        """
-        print("Usage:\n  python %s <host>"%(os.path.basename(__file__)))
-        print("For Example:\n  python %s www.baidu.com"%(os.path.basename(__file__)))
-        pass
-
     @classmethod
     def start(cls):
         """
-        开始扫描，处理参数
+        开始扫描，解析命令行参数，然后调用 run()
         """
 
         if len(sys.argv) < 2:
@@ -202,11 +219,10 @@ class PortScanner(object):
                     return
         if param["-p"] is not None:
             param["-p"] = param["-p"].split(',')
-            pass
 
+        # 构造对象
         scanner = PortScanner(param["host"], port_list=param["-p"], timeout=param["-t"])
         scanner.run()
-        pass
 
 
 def main():
@@ -217,4 +233,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    pass
